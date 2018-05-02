@@ -17,6 +17,7 @@ class HiveShellClient(object):
         self.view = HiveView(self.hive)
         self.input = sys.stdin
         self.player = {1: None, 2: None}
+        self.playerUnplayedPieces = {1: None, 2: None}
         self.logger = None
 
 
@@ -105,7 +106,7 @@ class HiveShellClient(object):
             return False
 
         try:
-            self.hive.action('play', (actPiece, refPiece, direction))
+            (_, self.playerUnplayedPieces[actPlayer]) = self.hive.action('play', (actPiece, refPiece, direction))
         except HiveException:
             return False
         return True
@@ -115,6 +116,8 @@ class HiveShellClient(object):
         self.logger = open('game.log', 'w')
         self.player[1] = self.piece_set('w')
         self.player[2] = self.piece_set('b')
+        self.playerUnplayedPieces[1] = self.piece_set('w')
+        self.playerUnplayedPieces[2] = self.piece_set('b')
         self.hive.turn += 1 # white player start
         self.hive.setup()
 
@@ -123,7 +126,7 @@ class HiveShellClient(object):
             active_player = (2 - (self.hive.turn % 2))
             print self.view
             print "pieces available: %s" % sorted(
-                self.player[active_player].keys()
+                self.playerUnplayedPieces[active_player].keys()
             )
             print "player %s play: " % active_player,
             try:
@@ -141,7 +144,6 @@ class HiveShellClient(object):
 
 
 def main():
-
     game = HiveShellClient()
     game.run()
 

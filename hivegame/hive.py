@@ -77,7 +77,7 @@ class Hive(object):
         # perform turn increment - TODO:if succesful
         self.turn += 1
         self.activePlayer ^= 1  # switch active player
-        return True
+        return (True, self.unplayedPieces[player])
 
     def get_unplayed_pieces(self, player):
         return self.unplayedPieces[player]
